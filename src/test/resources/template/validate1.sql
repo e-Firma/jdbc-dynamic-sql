@@ -1,0 +1,1 @@
+SELECT * FROM ${zoo.horse.name} WHERE name LIKE ${zoo.horse.name age > ${zoo.horse.age} and age < ${zoo.horse.age}

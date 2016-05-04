@@ -1,0 +1,1 @@
+SELECT * FROM ${zoo.horse.name} WHERE age > ${zoo.horse.age} and age < ${zoo.horse.age} and ${
