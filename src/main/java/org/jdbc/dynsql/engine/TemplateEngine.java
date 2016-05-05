@@ -54,6 +54,18 @@ public class TemplateEngine {
         return true;
     }
 
+    public static String getTemplate(String templatePath, String sectionName) {
+        TemplateEngine engine = new TemplateEngine();
+        try {
+            engine.Load(templatePath);
+            return engine.getTemplate(sectionName);
+        } catch (TemplateLoadException e) {
+            return null;
+        } catch (TemplateException e) {
+            return null;
+        }
+    }
+
     public Set<String> getSectionNames() {
         return this.template.keySet();
     }

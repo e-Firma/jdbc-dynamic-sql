@@ -22,13 +22,26 @@ public class TemplateParser {
 			mainToken.addToken(token);
 			if (token instanceof LexerTokenCommand) {
 				LexerTokenCommand command = (LexerTokenCommand) token;
+				
 				switch (command.getCommandName()) {
 				case FOR:
 					stack.add(mainToken);
 					mainToken = token;
 					break;
+					
 				case END_FOR:
 					mainToken = stack.pop();
+					break;
+				
+				case IF:
+				    stack.add(mainToken);
+                    mainToken = token;
+                    break;
+                    
+				case END_IF:
+                    mainToken = stack.pop();
+                    break;
+					
 				default:
 					break;
 				}
