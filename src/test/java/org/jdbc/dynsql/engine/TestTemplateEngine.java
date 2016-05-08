@@ -40,7 +40,7 @@ public class TestTemplateEngine {
         engine.Load("template/example.sql");
         
         // then
-        Assert.assertEquals(5, engine.getSectionNames().size());
+        Assert.assertEquals(4, engine.getSectionNames().size());
     }
 
     @Test

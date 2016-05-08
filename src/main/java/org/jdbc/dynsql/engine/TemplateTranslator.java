@@ -12,7 +12,6 @@ import org.jdbc.dynsql.exception.TemplateException;
 import org.jdbc.dynsql.exception.TemplateTranslateException;
 import org.jdbc.dynsql.lexer.LexerToken;
 import org.jdbc.dynsql.lexer.LexerTokenCommand;
-import org.jdbc.dynsql.lexer.LexerTokenConverter;
 import org.jdbc.dynsql.lexer.LexerTokenExpression;
 import org.jdbc.dynsql.reflection.BuildIterator;
 
@@ -31,7 +30,8 @@ public class TemplateTranslator {
         return process(rootToken.getTokens(), data);
     }
 
-    public String process(List<LexerToken> tokens, Map<String, Object> data) throws TemplateTranslateException, TemplateException, TemplateCommandException {
+    @SuppressWarnings("unchecked")
+	public String process(List<LexerToken> tokens, Map<String, Object> data) throws TemplateTranslateException, TemplateException, TemplateCommandException {
 
         StringBuilder partSQL = new StringBuilder();
         int index = 0;
@@ -64,7 +64,7 @@ public class TemplateTranslator {
                     
                 case END_FOR:
                     LexerTokenCommand commandFor = commandStack.peek();
-                    iterator = (Iterator) commandFor.getAssociatedObject();
+                    iterator = (Iterator<Object>) commandFor.getAssociatedObject();
                     if (iterator.hasNext()) {
                         Object nextObject = iterator.next();
                         data.put(commandFor.getTokenComponents()[1], nextObject);
@@ -72,6 +72,12 @@ public class TemplateTranslator {
                     } else {
                         commandStack.pop();
                     }
+				case END_IF:
+					break;
+				case IF:
+					break;
+				default:
+					break;
                 }
 
             } else
