@@ -1,43 +1,35 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token.impl;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.jdbc.dynsql.exception.TemplateCommandException;
+import org.jdbc.dynsql.lexer.token.LexerToken;
 
-public class LexerTokenSection implements LexerToken {
+
+public class LexerTokenContent implements LexerToken {
 
     private String expression;
-    private String[] tokenComponents;
+    private String [] tokenComponents;
+    private List<LexerToken> tokens;
     private int lineNumber = 0;
     private int charNumber = 0;
-
+    
     public void setExpression(String expression) {
-        this.expression = trim(expression);
+       this.expression = expression;
     }
 
     public String getExpression() {
-        return "--" + expression;
+        return expression;
     }
 
     public String[] getTokenComponents() {
-        return null;
+        return tokenComponents;
     }
-
-    public String trim(String variableExpression) {
-        variableExpression = variableExpression.trim();
-        if (variableExpression.startsWith("--##"))
-            return variableExpression.substring(4, variableExpression.length()).trim();
-        else
-            return variableExpression;
-    }
-
+    
     public List<LexerToken> getTokens() {
         return null;
     }
 
     public void addToken(LexerToken token) {
-        
     }
 
     public void setStartingOfTemplate(int startingOfLine, int startingOfChar) {
@@ -47,7 +39,7 @@ public class LexerTokenSection implements LexerToken {
 
     @Override
     public String toString() {
-        return String.format("TOKEN SECTION <%s,%s>: [%s]", lineNumber, charNumber, expression);
+        return String.format("TOKEN CONTENT <%s,%s>: [%s]", lineNumber, charNumber, expression);
     }
 
 	public void setAssociatedObject(Object object) {

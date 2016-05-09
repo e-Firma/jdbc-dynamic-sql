@@ -10,9 +10,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.jdbc.dynsql.exception.TemplateCommandException;
 import org.jdbc.dynsql.exception.TemplateException;
 import org.jdbc.dynsql.exception.TemplateTranslateException;
-import org.jdbc.dynsql.lexer.LexerToken;
-import org.jdbc.dynsql.lexer.LexerTokenCommand;
-import org.jdbc.dynsql.lexer.LexerTokenExpression;
+import org.jdbc.dynsql.lexer.token.LexerToken;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenExpression;
 import org.jdbc.dynsql.reflection.BuildIterator;
 
 public class TemplateTranslator {
@@ -51,27 +51,27 @@ public class TemplateTranslator {
 
                 switch (command.getCommandName()) {
                 case FOR:
-                    associatedObject = getValueExpression(new LexerTokenExpression(command.getTokenComponents()[3]), data);
+                    associatedObject = getValueExpression(new LexerTokenExpression(command.getForCollectionName()), data);
                     iterator = BuildIterator.getIterator(associatedObject);
                     command.setAssociatedObject(iterator);
                     if (iterator.hasNext()) {
                         commandStack.push(command);
                         Object nextObject = iterator.next();
-                        data.put(command.getTokenComponents()[1], nextObject);
+                        data.put(command.getForVariableName(), nextObject);
                         partSQL.append(process(command.getTokens(), data));
                     }
                     break;
-                    
                 case END_FOR:
                     LexerTokenCommand commandFor = commandStack.peek();
                     iterator = (Iterator<Object>) commandFor.getAssociatedObject();
                     if (iterator.hasNext()) {
                         Object nextObject = iterator.next();
-                        data.put(commandFor.getTokenComponents()[1], nextObject);
+                        data.put(commandFor.getForVariableName(), nextObject);
                         index = 0;
                     } else {
                         commandStack.pop();
                     }
+                    break;
 				case END_IF:
 					break;
 				case IF:

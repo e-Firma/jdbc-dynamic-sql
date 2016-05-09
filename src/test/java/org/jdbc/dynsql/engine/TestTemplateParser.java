@@ -1,9 +1,9 @@
 package org.jdbc.dynsql.engine;
 
 import org.jdbc.dynsql.exception.TemplateCommandException;
-import org.jdbc.dynsql.lexer.LexerToken;
-import org.jdbc.dynsql.lexer.LexerTokenConverter;
-import org.jdbc.dynsql.lexer.LexerTokenTemplate;
+import org.jdbc.dynsql.lexer.token.LexerToken;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenConverter;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenTemplate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

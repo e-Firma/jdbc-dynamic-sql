@@ -1,4 +1,4 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token;
 
 import java.util.List;
 

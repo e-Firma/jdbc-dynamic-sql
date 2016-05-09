@@ -4,9 +4,9 @@ import java.util.Stack;
 
 import org.jdbc.dynsql.exception.TemplateCommandException;
 import org.jdbc.dynsql.lexer.Lexer;
-import org.jdbc.dynsql.lexer.LexerToken;
-import org.jdbc.dynsql.lexer.LexerTokenCommand;
-import org.jdbc.dynsql.lexer.LexerTokenTemplate;
+import org.jdbc.dynsql.lexer.token.LexerToken;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenTemplate;
 
 public class TemplateParser {
 

@@ -1,18 +1,19 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.jdbc.dynsql.exception.TemplateException;
+import org.jdbc.dynsql.lexer.token.LexerToken;
 
+public class LexerTokenTemplate implements LexerToken {
 
-public class LexerTokenCRLF implements LexerToken {
-
-    private String expression = "\n";
+    private String expression;
+    private List<LexerToken> tokens = new ArrayList<LexerToken>();
     private int lineNumber = 0;
     private int charNumber = 0;
-
+    
     public void setExpression(String expression) {
-        this.expression = expression;
+       this.expression = expression;
     }
 
     public String getExpression() {
@@ -20,16 +21,18 @@ public class LexerTokenCRLF implements LexerToken {
     }
 
     public String[] getTokenComponents() {
-        return new String[] {expression};
-    }
-    
-    public List<LexerToken> getTokens() {
         return null;
     }
 
-    public void addToken(LexerToken token) {
+    public List<LexerToken> getTokens() {
+        // TODO Auto-generated method stub
+        return tokens;
     }
-    
+
+    public void addToken(LexerToken token) {
+        this.tokens.add(token);
+    }
+
     public void setStartingOfTemplate(int startingOfLine, int startingOfChar) {
         lineNumber = startingOfLine;
         charNumber = startingOfChar;
@@ -37,7 +40,7 @@ public class LexerTokenCRLF implements LexerToken {
     
     @Override
     public String toString() {
-        return String.format("TOKEN CLRF <%s,%s>", lineNumber, charNumber);
+        return String.format("TOKEN TEMPLATE");
     }
 
 	public void setAssociatedObject(Object object) {
