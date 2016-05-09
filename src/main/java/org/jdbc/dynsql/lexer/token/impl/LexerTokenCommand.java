@@ -72,8 +72,12 @@ public class LexerTokenCommand implements LexerToken {
         }
     }
     
-    public String getCollectionName() {
+    public String getForCollectionName() {
     	return tokenComponents[3];
+    }
+    
+    public String getForVariableName() {
+    	return tokenComponents[1];
     }
 
 	public void setAssociatedObject(Object object) {

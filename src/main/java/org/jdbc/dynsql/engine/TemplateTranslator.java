@@ -51,13 +51,13 @@ public class TemplateTranslator {
 
                 switch (command.getCommandName()) {
                 case FOR:
-                    associatedObject = getValueExpression(new LexerTokenExpression(command.getCollectionName()), data);
+                    associatedObject = getValueExpression(new LexerTokenExpression(command.getForCollectionName()), data);
                     iterator = BuildIterator.getIterator(associatedObject);
                     command.setAssociatedObject(iterator);
                     if (iterator.hasNext()) {
                         commandStack.push(command);
                         Object nextObject = iterator.next();
-                        data.put(command.getTokenComponents()[1], nextObject);
+                        data.put(command.getForVariableName(), nextObject);
                         partSQL.append(process(command.getTokens(), data));
                     }
                     break;
@@ -66,7 +66,7 @@ public class TemplateTranslator {
                     iterator = (Iterator<Object>) commandFor.getAssociatedObject();
                     if (iterator.hasNext()) {
                         Object nextObject = iterator.next();
-                        data.put(commandFor.getTokenComponents()[1], nextObject);
+                        data.put(commandFor.getForVariableName(), nextObject);
                         index = 0;
                     } else {
                         commandStack.pop();
