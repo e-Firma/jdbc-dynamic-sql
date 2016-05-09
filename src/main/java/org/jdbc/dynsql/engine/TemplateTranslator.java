@@ -112,10 +112,6 @@ public class TemplateTranslator {
     public String escape(Object value) {
         if ( value == null)
             return "null";
-        if (value instanceof String)
-        {
-            return StringEscapeUtils.escapeSql(value.toString());
-        }
         return StringEscapeUtils.escapeSql(value.toString());
     }
 }
