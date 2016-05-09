@@ -114,7 +114,7 @@ public class TemplateTranslator {
             return "null";
         if (value instanceof String)
         {
-            return "'" + StringEscapeUtils.escapeSql(value.toString()) + "'";
+            return StringEscapeUtils.escapeSql(value.toString());
         }
         return StringEscapeUtils.escapeSql(value.toString());
     }
