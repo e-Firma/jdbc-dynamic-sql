@@ -1,4 +1,4 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.jdbc.dynsql.exception.TemplateCommandException;
+import org.jdbc.dynsql.lexer.LexerCommand;
+import org.jdbc.dynsql.lexer.token.LexerToken;
 
 public class LexerTokenCommand implements LexerToken {
 
@@ -68,6 +70,10 @@ public class LexerTokenCommand implements LexerToken {
         } catch (Exception ex) {
             throw new TemplateCommandException("Unrecognize command: " + getTokenComponents()[0]);
         }
+    }
+    
+    public String getCollectionName() {
+    	return tokenComponents[3];
     }
 
 	public void setAssociatedObject(Object object) {

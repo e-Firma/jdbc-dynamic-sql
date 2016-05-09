@@ -1,7 +1,9 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token.impl;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.jdbc.dynsql.lexer.token.LexerToken;
 
 
 public class LexerTokenExpression implements LexerToken {

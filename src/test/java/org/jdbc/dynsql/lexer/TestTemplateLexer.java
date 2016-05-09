@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdbc.dynsql.lexer.Lexer;
-import org.jdbc.dynsql.lexer.LexerToken;
-import org.jdbc.dynsql.lexer.LexerTokenCommand;
-import org.jdbc.dynsql.lexer.LexerTokenExpression;
+import org.jdbc.dynsql.lexer.token.LexerToken;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenExpression;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -14,6 +14,7 @@ import org.jdbc.dynsql.test.Animal;
 import org.jdbc.dynsql.test.ZOO;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestTemplateEngine {
@@ -159,6 +160,23 @@ public class TestTemplateEngine {
         String query = engine.process("Section0", data);
         // then
         Assert.assertEquals("-- Section0", query.trim());
+    }
+    
+    @Ignore
+    @Test
+    public void TestSelectAndForWithData_ExpectGivenReadyQueryForRun() throws TemplateLoadException, TemplateException, TemplateTranslateException, TemplateCommandException
+    {
+    	// given
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("horses", new String[] {});
+        data.put("tab_name", "tab_name");
+        
+        // when
+        TemplateEngine engine = new TemplateEngine();
+        engine.Load("template/for.sql");
+        String query = engine.process("Section2", data);
+        Assert.assertEquals("-- Section2\nSELECT * FROM tab_name;\nINSERT INTO horses VALUES ('Luna1', 8);\nINSERT INTO horses VALUES ('Luna2', 9);", query);
+        
     }
     
     private void prepareHorsesList()

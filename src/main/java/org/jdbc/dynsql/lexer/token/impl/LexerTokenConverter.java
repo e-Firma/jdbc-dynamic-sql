@@ -1,6 +1,8 @@
-package org.jdbc.dynsql.lexer;
+package org.jdbc.dynsql.lexer.token.impl;
 
 import java.util.List;
+
+import org.jdbc.dynsql.lexer.token.LexerToken;
 
 public class LexerTokenConverter {
     private int indent;

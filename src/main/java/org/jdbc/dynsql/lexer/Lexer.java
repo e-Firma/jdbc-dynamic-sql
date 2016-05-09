@@ -1,7 +1,11 @@
 package org.jdbc.dynsql.lexer;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jdbc.dynsql.lexer.token.LexerToken;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenCRLF;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenContent;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenExpression;
+import org.jdbc.dynsql.lexer.token.impl.LexerTokenSection;
 
 public class Lexer {
     private String[] template;
