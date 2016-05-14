@@ -1,6 +1,7 @@
 package org.jdbc.dynsql.engine;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -85,15 +86,24 @@ public class TemplateTranslator {
         return partSQL.toString();
     }
 
-    //probably needs some index (iterator) management
     public Object getValueExpression(LexerToken token, Map<String, Object> data) throws TemplateTranslateException {
-        try {
-        	String objectPath[] = token.getTokenComponents();
-            Object object = data.get(objectPath[0]);
-            if (object instanceof Map<?, ?>) {
-            	return getValueExpressionFromMap(token, data);
+    	String objectPath[] = token.getTokenComponents();
+        Object extractedObject = data.get(objectPath[0]);
+        if(objectPath.length == 1) {
+        	return extractedObject;
+        }
+        else {
+        	objectPath = Arrays.copyOfRange(objectPath, 1, objectPath.length);
+        	return actualExpressionEvaluation(extractedObject, objectPath);
+        }
+    }
+    
+    private Object actualExpressionEvaluation(Object data, String[] objectPath) throws TemplateTranslateException {
+    	try {
+            if (data instanceof Map<?, ?>) {
+            	return getValueExpressionFromMap((Map<String, Object>) data, objectPath);
             } else {
-            	return getValueExpressionFromClassObject(token, data);
+            	return getValueExpressionFromClassObject(data, objectPath);
             }
         } catch (Exception ex) {
             throw new TemplateTranslateException(ex);
@@ -101,28 +111,21 @@ public class TemplateTranslator {
     }
     
     //TODO needs to be finished ;)
-    private Object getValueExpressionFromMap(LexerToken token, Map<String, Object> data) {
+    private Object getValueExpressionFromMap(Map<String, Object> data, String[] objectPath) {
 		return null;
 	}
 
-	public Object getValueExpressionFromClassObject(LexerToken token, Map<String, Object> data) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    	String objectPath[] = token.getTokenComponents();
-        Object object = data.get(objectPath[0]);
-        int position = 1;
-        int size = objectPath.length;
-        if (size == 1) {
-            return object;
-        } else
-            while (position < size) {
-                String fieldName = objectPath[position];
-
-                Field field = object.getClass().getDeclaredField(fieldName);
-                field.setAccessible(true);
-                object = field.get(object);
-                position++;
-            }
-        return object;
-    }
+	public Object getValueExpressionFromClassObject(Object data, String[] objectPath) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, TemplateTranslateException {
+		String fieldName = objectPath[0];
+		Field field = data.getClass().getDeclaredField(fieldName);
+		field.setAccessible(true);
+		data = field.get(data);
+		if (objectPath.length > 1) {
+			objectPath = Arrays.copyOfRange(objectPath, 1, objectPath.length);
+			return actualExpressionEvaluation(data, objectPath);
+		}
+		return data;
+	}
 
     public String escape(Object value) {
         if ( value == null)

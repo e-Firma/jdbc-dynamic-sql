@@ -26,6 +26,7 @@ public class TestTemplateTranslator extends TestCase{
     private Animal horse;
     private Date currentDate;
     private Map<String, Object> dataObjects = new HashMap<String, Object>();
+    private TemplateTranslator translator;
 
     
     @Override
@@ -45,13 +46,13 @@ public class TestTemplateTranslator extends TestCase{
         dataObjects.put("zoo", zoo);
         dataObjects.put("horse", horse);
         dataObjects.put("horses", emptyHorsesList);
+        
+        translator = new TemplateTranslator();
     };
     
     @Test
     public void testWhenPutHorseObjectToTranslator_ExpectedGetCorrectAge() throws TemplateTranslateException
     {
-        TemplateTranslator translator = new TemplateTranslator();
-        
         LexerTokenExpression token = new LexerTokenExpression();
         token.setExpression("${horse.age}");
         
@@ -63,8 +64,6 @@ public class TestTemplateTranslator extends TestCase{
     @Test
     public void testWhenPutHorseObjectToTranslator_ExpectedGetCorrectName() throws TemplateTranslateException
     {
-        TemplateTranslator translator = new TemplateTranslator();
-        
         LexerTokenExpression token = new LexerTokenExpression();
         token.setExpression("${horse.name}");
         
@@ -75,8 +74,6 @@ public class TestTemplateTranslator extends TestCase{
     @Test
     public void testWhenPutZooObjectToTranslator_ExpectedGetCorrectHorseName() throws TemplateTranslateException
     {
-        TemplateTranslator translator = new TemplateTranslator();
-        
         LexerTokenExpression token = new LexerTokenExpression();
         token.setExpression("${zoo.horse.name}");
         
@@ -88,12 +85,29 @@ public class TestTemplateTranslator extends TestCase{
     @Test
     public void testWhenPutZooObjectToTranslator_ExpectedGetCorrectOpenFrom() throws TemplateTranslateException
     {
-        TemplateTranslator translator = new TemplateTranslator();
-        
         LexerTokenExpression token = new LexerTokenExpression();
         token.setExpression("${zoo.openFrom}");
         
         Object openFrom = translator.getValueExpression(token, dataObjects);
         Assert.assertEquals(openFrom, currentDate);
+    }
+    
+    @Test
+    public void testWhenPutMapObjectToTranslator_ExpectedGetCorrectName() throws TemplateTranslateException
+    {
+    	// given
+    	final String EXPECTED_NAME = "ZOO_NAME";
+    	LexerTokenExpression token = new LexerTokenExpression();
+    	HashMap<String, Object> data = new HashMap<String, Object>();
+    	HashMap<String, Object> zoo = new HashMap<String, Object>();
+    	
+    	// when
+    	zoo.put("name", EXPECTED_NAME);
+    	data.put("zoo", zoo);
+    	token.setExpression("${zoo.name}");
+    	Object recivedName = translator.getValueExpression(token, data);
+    	
+    	// then
+    	Assert.assertEquals(EXPECTED_NAME, recivedName);
     }
 }
