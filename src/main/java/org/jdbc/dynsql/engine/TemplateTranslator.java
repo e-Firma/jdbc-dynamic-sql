@@ -110,9 +110,14 @@ public class TemplateTranslator {
         }
     }
     
-    //TODO needs to be finished ;)
-    private Object getValueExpressionFromMap(Map<String, Object> data, String[] objectPath) {
-		return null;
+    private Object getValueExpressionFromMap(Map<String, Object> data, String[] objectPath) throws TemplateTranslateException {
+    	String objectName = objectPath[0];
+    	Object object = data.get(objectName);
+    	if (objectPath.length > 1) {
+			objectPath = Arrays.copyOfRange(objectPath, 1, objectPath.length);
+			return actualExpressionEvaluation(data, objectPath);
+		}
+		return object;
 	}
 
 	public Object getValueExpressionFromClassObject(Object data, String[] objectPath) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, TemplateTranslateException {
