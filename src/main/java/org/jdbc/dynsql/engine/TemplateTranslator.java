@@ -79,34 +79,49 @@ public class TemplateTranslator {
 				default:
 					break;
                 }
-
             } else
                 partSQL.append(value);
         }
         return partSQL.toString();
     }
 
+    //probably needs some index (iterator) management
     public Object getValueExpression(LexerToken token, Map<String, Object> data) throws TemplateTranslateException {
         try {
-            String objectPath[] = token.getTokenComponents();
+        	String objectPath[] = token.getTokenComponents();
             Object object = data.get(objectPath[0]);
-            int position = 1;
-            int size = objectPath.length;
-            if (size == 1) {
-                return object;
-            } else
-                while (position < size) {
-                    String fieldName = objectPath[position];
-
-                    Field field = object.getClass().getDeclaredField(fieldName);
-                    field.setAccessible(true);
-                    object = field.get(object);
-                    position++;
-                }
-            return object;
+            if (object instanceof Map<?, ?>) {
+            	return getValueExpressionFromMap(token, data);
+            } else {
+            	return getValueExpressionFromClassObject(token, data);
+            }
         } catch (Exception ex) {
             throw new TemplateTranslateException(ex);
         }
+    }
+    
+    //TODO needs to be finished ;)
+    private Object getValueExpressionFromMap(LexerToken token, Map<String, Object> data) {
+		return null;
+	}
+
+	public Object getValueExpressionFromClassObject(LexerToken token, Map<String, Object> data) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    	String objectPath[] = token.getTokenComponents();
+        Object object = data.get(objectPath[0]);
+        int position = 1;
+        int size = objectPath.length;
+        if (size == 1) {
+            return object;
+        } else
+            while (position < size) {
+                String fieldName = objectPath[position];
+
+                Field field = object.getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                object = field.get(object);
+                position++;
+            }
+        return object;
     }
 
     public String escape(Object value) {
