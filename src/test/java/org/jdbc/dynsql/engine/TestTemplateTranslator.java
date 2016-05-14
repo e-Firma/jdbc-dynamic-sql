@@ -7,18 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.jdbc.dynsql.engine.TemplateTranslator;
-import org.jdbc.dynsql.exception.TemplateCommandException;
-import org.jdbc.dynsql.exception.TemplateException;
 import org.jdbc.dynsql.exception.TemplateTranslateException;
-import org.jdbc.dynsql.lexer.token.LexerToken;
 import org.jdbc.dynsql.lexer.token.impl.LexerTokenExpression;
 import org.jdbc.dynsql.test.Animal;
+import org.jdbc.dynsql.test.MapWrapper;
 import org.jdbc.dynsql.test.ZOO;
 import org.junit.Assert;
 import org.junit.Test;
+
+import junit.framework.TestCase;
 
 public class TestTemplateTranslator extends TestCase{
     
@@ -105,9 +102,50 @@ public class TestTemplateTranslator extends TestCase{
     	zoo.put("name", EXPECTED_NAME);
     	data.put("zoo", zoo);
     	token.setExpression("${zoo.name}");
-    	Object recivedName = translator.getValueExpression(token, data);
+    	Object receivedName = translator.getValueExpression(token, data);
     	
     	// then
-    	Assert.assertEquals(EXPECTED_NAME, recivedName);
+    	Assert.assertEquals(EXPECTED_NAME, receivedName);
+    }
+    
+    @Test
+    public void testWhenPutMixed_MapMapObjectToTranslator_ExpectedGetCorrectName() throws TemplateTranslateException
+    {
+    	// given
+    	LexerTokenExpression token = new LexerTokenExpression();
+    	HashMap<String, Object> data = new HashMap<String, Object>();
+    	HashMap<String, Object> zoo = new HashMap<String, Object>();
+    	
+    	// when
+    	zoo.put("horse", horse);
+    	data.put("zoo", zoo);
+    	token.setExpression("${zoo.horse.name}");
+    	Object receivedName = translator.getValueExpression(token, data);
+    	
+    	// then
+    	Assert.assertEquals(horse.getName(), receivedName);
+    }
+    
+    @Test
+    public void testWhenPutMixed_MapObjectMapToTranslator_ExpectedGetCorrectName() throws TemplateTranslateException
+    {
+    	// given
+    	final String EXPECTED_NAME = "ZOO_NAME";
+    	LexerTokenExpression token = new LexerTokenExpression();
+    	HashMap<String, Object> data = new HashMap<String, Object>();
+    	HashMap<String, Object> zoo = new HashMap<String, Object>();
+    	MapWrapper mapWrapper = new MapWrapper();
+    	HashMap<String, Object> nameProvider = new HashMap<String, Object>();
+    	
+    	// when
+    	nameProvider.put("name", EXPECTED_NAME);
+    	mapWrapper.setMap(nameProvider);
+    	zoo.put("mapWrapper", mapWrapper);
+    	data.put("zoo", zoo);
+    	token.setExpression("${zoo.mapWrapper.map.name}");
+    	Object receivedName = translator.getValueExpression(token, data);
+    	
+    	// then
+    	Assert.assertEquals(EXPECTED_NAME, receivedName);
     }
 }

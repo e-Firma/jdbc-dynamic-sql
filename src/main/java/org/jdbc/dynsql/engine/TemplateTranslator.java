@@ -98,7 +98,8 @@ public class TemplateTranslator {
         }
     }
     
-    private Object actualExpressionEvaluation(Object data, String[] objectPath) throws TemplateTranslateException {
+    @SuppressWarnings("unchecked")
+	private Object actualExpressionEvaluation(Object data, String[] objectPath) throws TemplateTranslateException {
     	try {
             if (data instanceof Map<?, ?>) {
             	return getValueExpressionFromMap((Map<String, Object>) data, objectPath);
@@ -115,7 +116,7 @@ public class TemplateTranslator {
     	Object object = data.get(objectName);
     	if (objectPath.length > 1) {
 			objectPath = Arrays.copyOfRange(objectPath, 1, objectPath.length);
-			return actualExpressionEvaluation(data, objectPath);
+			return actualExpressionEvaluation(object, objectPath);
 		}
 		return object;
 	}
