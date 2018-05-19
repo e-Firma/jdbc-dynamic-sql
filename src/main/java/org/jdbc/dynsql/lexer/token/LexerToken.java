@@ -6,7 +6,7 @@ public interface LexerToken {
     void setExpression(String expression);
     String getExpression();
     String[] getTokenComponents();
-    void setStartingOfTemplate(int startingOfLine, int startingOfChar);
+    void setTemplateBeginning(int lineNumber, int charNumber);
     void addToken(LexerToken token);
     List<LexerToken> getTokens();
     void setAssociatedObject(Object object);

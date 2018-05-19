@@ -41,9 +41,9 @@ public class LexerTokenSection implements LexerToken {
         
     }
 
-    public void setStartingOfTemplate(int startingOfLine, int startingOfChar) {
-        lineNumber = startingOfLine;
-        charNumber = startingOfChar;
+    public void setTemplateBeginning(int lineNumber, int charNumber) {
+        this.lineNumber = lineNumber;
+        this.charNumber = charNumber;
     }
 
     @Override

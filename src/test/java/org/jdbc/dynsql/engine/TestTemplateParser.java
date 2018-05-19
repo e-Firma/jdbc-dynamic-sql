@@ -10,12 +10,13 @@ import org.junit.Test;
 
 public class TestTemplateParser {
 
+    private String EXAMPLE_TEMPLATE_1 = "--##section 0\n--FOR horse in horses\nSELECT * FROM ${horse.name}\n--END_FOR\nSELECT 1";
+
     @Test
     public void test1() throws TemplateCommandException
     {
         TemplateParser parser = new TemplateParser();
-        String template = "--##section 0\n--FOR horse in horses\nSELECT * FROM ${horse.name}\n--END_FOR\nSELECT 1";
-        LexerToken mainToken = parser.parse(template);
+        LexerToken mainToken = parser.parse(EXAMPLE_TEMPLATE_1);
         
         LexerTokenConverter converter = new LexerTokenConverter();
         System.out.println(converter.toString(mainToken));

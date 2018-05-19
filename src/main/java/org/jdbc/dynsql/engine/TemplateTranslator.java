@@ -26,13 +26,12 @@ public class TemplateTranslator {
         this.parser = new TemplateParser();
     }
 
-    public String process(String template, Map<String, Object> data) throws TemplateTranslateException, TemplateException, TemplateCommandException {
+    public String process(String template, Map<String, Object> data) throws TemplateTranslateException, TemplateCommandException {
         LexerToken rootToken = parser.parse(template);
         return process(rootToken.getTokens(), data);
     }
 
-    @SuppressWarnings("unchecked")
-	public String process(List<LexerToken> tokens, Map<String, Object> data) throws TemplateTranslateException, TemplateException, TemplateCommandException {
+	private String process(List<LexerToken> tokens, Map<String, Object> data) throws TemplateTranslateException, TemplateCommandException {
 
         StringBuilder partSQL = new StringBuilder();
         int index = 0;
@@ -51,34 +50,34 @@ public class TemplateTranslator {
                 LexerTokenCommand command = (LexerTokenCommand) token;
 
                 switch (command.getCommandName()) {
-                case FOR:
-                    associatedObject = getValueExpression(new LexerTokenExpression(command.getForCollectionName()), data);
-                    iterator = BuildIterator.getIterator(associatedObject);
-                    command.setAssociatedObject(iterator);
-                    if (iterator.hasNext()) {
-                        commandStack.push(command);
-                        Object nextObject = iterator.next();
-                        data.put(command.getForVariableName(), nextObject);
-                        partSQL.append(process(command.getTokens(), data));
-                    }
-                    break;
-                case END_FOR:
-                    LexerTokenCommand commandFor = commandStack.peek();
-                    iterator = (Iterator<Object>) commandFor.getAssociatedObject();
-                    if (iterator.hasNext()) {
-                        Object nextObject = iterator.next();
-                        data.put(commandFor.getForVariableName(), nextObject);
-                        index = 0;
-                    } else {
-                        commandStack.pop();
-                    }
-                    break;
-				case END_IF:
-					break;
-				case IF:
-					break;
-				default:
-					break;
+                    case FOR:
+                        associatedObject = getValueExpression(new LexerTokenExpression(command.getForCollectionName()), data);
+                        iterator = BuildIterator.getIterator(associatedObject);
+                        command.setAssociatedObject(iterator);
+                        if (iterator.hasNext()) {
+                            commandStack.push(command);
+                            Object nextObject = iterator.next();
+                            data.put(command.getForVariableName(), nextObject);
+                            partSQL.append(process(command.getTokens(), data));
+                        }
+                        break;
+                    case END_FOR:
+                        LexerTokenCommand commandFor = commandStack.peek();
+                        iterator = (Iterator<Object>) commandFor.getAssociatedObject();
+                        if (iterator.hasNext()) {
+                            Object nextObject = iterator.next();
+                            data.put(commandFor.getForVariableName(), nextObject);
+                            index = 0;
+                        } else {
+                            commandStack.pop();
+                        }
+                        break;
+                    case IF:
+                        break;
+                    case END_IF:
+                        break;
+                    default:
+                        break;
                 }
             } else
                 partSQL.append(value);

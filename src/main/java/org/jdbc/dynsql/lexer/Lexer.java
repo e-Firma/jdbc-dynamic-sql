@@ -39,14 +39,14 @@ public class Lexer {
         // check command
         if (isCommand(stringLine)) {
             token = new LexerTokenCommand();
-            token.setStartingOfTemplate(line, index);
+            token.setTemplateBeginning(line, index);
             token.setExpression(stringLine);
             line++;
             return token;
         } else if (isSection(stringLine))
         {
             token = new LexerTokenSection();
-            token.setStartingOfTemplate(line, index);
+            token.setTemplateBeginning(line, index);
             token.setExpression(stringLine);
             line++;
             return token;
@@ -60,7 +60,7 @@ public class Lexer {
                     // check found content
                     if (startSearch < index) {
                         token = new LexerTokenContent();
-                        token.setStartingOfTemplate(line, index);
+                        token.setTemplateBeginning(line, index);
                         token.setExpression(stringLine.substring(startSearch, index));
                         return token;
                     } else {
@@ -68,7 +68,7 @@ public class Lexer {
                     }
                 } else if (expressionFound && stringLine.charAt(index) == '}') {
                     token = new LexerTokenExpression();
-                    token.setStartingOfTemplate(line, index);
+                    token.setTemplateBeginning(line, index);
                     token.setExpression(stringLine.substring(startSearch, index + 1));
                     index++;
                     return token;
@@ -80,7 +80,7 @@ public class Lexer {
         // recognize end line
         if (startSearch < index) {
             token = new LexerTokenContent();
-            token.setStartingOfTemplate(line, index);
+            token.setTemplateBeginning(line, index);
             token.setExpression(stringLine.substring(startSearch, index));
             index++;
             return token;
@@ -88,7 +88,7 @@ public class Lexer {
             line++;
             index = 0;
             token = new LexerTokenCRLF();
-            token.setStartingOfTemplate(line, index);
+            token.setTemplateBeginning(line, index);
             return token;
         }
         return token;

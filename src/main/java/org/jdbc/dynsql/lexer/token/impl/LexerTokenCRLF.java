@@ -31,9 +31,9 @@ public class LexerTokenCRLF implements LexerToken {
     public void addToken(LexerToken token) {
     }
     
-    public void setStartingOfTemplate(int startingOfLine, int startingOfChar) {
-        lineNumber = startingOfLine;
-        charNumber = startingOfChar;
+    public void setTemplateBeginning(int lineNumber, int charNumber) {
+        this.lineNumber = lineNumber;
+        this.charNumber = charNumber;
     }
     
     @Override
