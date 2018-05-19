@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,59 +16,53 @@ import org.jdbc.dynsql.exception.TemplateTranslateException;
 
 public class TemplateEngine {
 
-    private Map<String, String> template = new LinkedHashMap<String, String>();
+    private Map<String, String> template = new LinkedHashMap<>();
 
-    public boolean Load(String templatePath) throws TemplateLoadException {
+    public void load(String templatePath) throws TemplateLoadException {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = null;
+        File file;
+        URL templateUrl = classLoader.getResource(templatePath);
+        if (templateUrl == null)
+            throw new TemplateLoadException(String.format("Template %s not fount.", templatePath));
         try {
-            URI uri = new URI(classLoader.getResource(templatePath).toString());
-            file = new File(uri.getPath());
+            URI templateUri = new URI(templateUrl.toString());
+            file = new File(templateUri.getPath());
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
-            String line = null;
+            String line;
             String keyName = "##";
             StringBuilder body = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
                 if (line.startsWith("--##")) {
-                    if (body != null && keyName != null) {
-                        template.put(keyName, body.toString());
-                    }
+                    template.put(keyName, body.toString());
                     keyName = line.replace("--##", "").trim();
                     body = new StringBuilder();
-                    body.append("-- " + keyName + "\n");
-                } else if (body != null) {
-                    body.append(line + "\n");
+                    body.append("-- ").append(keyName).append("\n");
+                } else {
+                    body.append(line).append("\n");
                 }
             }
             reader.close();
 
-            if (body != null && body.length() > 0 && keyName != null) {
+            if (body.length() > 0 && keyName.length() > 0) {
                 template.put(keyName, body.toString());
             }
 
         } catch (Exception ex) {
             throw new TemplateLoadException(ex);
         }
-        return true;
     }
 
-    public static String getTemplate(String templatePath, String sectionName) {
+    public static String getTemplate(String templatePath, String sectionName) throws TemplateLoadException, TemplateException{
         TemplateEngine engine = new TemplateEngine();
-        try {
-            engine.Load(templatePath);
-            return engine.getTemplate(sectionName);
-        } catch (TemplateLoadException e) {
-            return null;
-        } catch (TemplateException e) {
-            return null;
-        }
+        engine.load(templatePath);
+        return engine.getTemplate(sectionName);
     }
 
     public Set<String> getSectionNames() {
-        return this.template.keySet();
+        return template.keySet();
     }
 
     public String getTemplate(String sectionName) throws TemplateException {

@@ -36,7 +36,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load("template/unknown.sql");
+        engine.load("template/unknown.sql");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
 
         // then
         Assert.assertEquals(4, engine.getSectionNames().size());
@@ -57,7 +57,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
 
         // then
         Assert.assertEquals("##", engine.getSectionNames().stream().findFirst().orElse(null));
@@ -69,7 +69,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
         String template = engine.getTemplate("##");
 
         // then
@@ -82,7 +82,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
         engine.getTemplate("unknown");
     }
 
@@ -92,7 +92,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
         String template = engine.getTemplate("First SQL Section Name");
 
         // then
@@ -105,7 +105,7 @@ public class TestTemplateEngine {
         TemplateEngine engine = new TemplateEngine();
 
         // when
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
         String template = engine.getTemplate();
 
         // then
@@ -124,7 +124,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_EXAMPLE);
+        engine.load(TEMPLATE_EXAMPLE);
         String query = engine.process("ZOO SQL", data);
 
         // then
@@ -140,7 +140,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_FOR);
+        engine.load(TEMPLATE_FOR);
         String query = engine.process("Section0", data);
 
         // then
@@ -157,7 +157,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_FOR);
+        engine.load(TEMPLATE_FOR);
         String query = engine.process("Section1", data);
 
         // then
@@ -173,7 +173,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_FOR);
+        engine.load(TEMPLATE_FOR);
         engine.process("Section0", data);
     }
 
@@ -186,7 +186,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_FOR);
+        engine.load(TEMPLATE_FOR);
         String query = engine.process("Section0", data);
 
         // then
@@ -204,7 +204,7 @@ public class TestTemplateEngine {
 
         // when
         TemplateEngine engine = new TemplateEngine();
-        engine.Load(TEMPLATE_FOR);
+        engine.load(TEMPLATE_FOR);
         String query = engine.process("Section2", data);
 
         // then
