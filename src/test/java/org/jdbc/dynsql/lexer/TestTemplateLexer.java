@@ -2,6 +2,7 @@ package org.jdbc.dynsql.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.jdbc.dynsql.lexer.Lexer;
 import org.jdbc.dynsql.lexer.token.LexerToken;
@@ -12,88 +13,107 @@ import org.junit.Test;
 
 public class TestTemplateLexer {
 
+    private final String FOR_COMMAND = "--FOR row IN rows";
+    private final String FOR_COMMAND_WITH_LEADING_SPACE = " --FOR row IN rows";
+    private final String SELECT_EXPRESSION = "SELECT * FROM ${table_name}";
+    private final String EXPRESSION_CONCATENATION = "'${zoo.horse.name}+${zoo.horse.name}'";
+    private final String COMPLEX_SELECT_EXPRESSION = "SELECT * FROM ${table_name} WHERE name LIKE '${zoo.horse.name}+${o}'";
+
     @Test
     public void whenGivenCommandFor_ExpectedTokenCommand() {
+        // given
         Lexer lexer = new Lexer();
-        lexer.setTemplate("--FOR row IN rows");
+        lexer.setTemplate(FOR_COMMAND);
+
+        // when
         LexerToken token = lexer.nextToken();
+
+        // then
         Assert.assertTrue(token instanceof LexerTokenCommand);
     }
 
+    @Test
+    public void whenGivenCommandForWithSpace_ExpectedTokenCommand() {
+        // given
+        Lexer lexer = new Lexer();
+        lexer.setTemplate(FOR_COMMAND_WITH_LEADING_SPACE);
+
+        // when
+        LexerToken token = lexer.nextToken();
+
+        // then
+        Assert.assertTrue(token instanceof LexerTokenCommand);
+    }
 
     @Test
     public void whenGivenCommandFor_ExpectedTokenCommandWithExpression() {
-        String templateFOR = "--FOR row IN rows";
+        // given
         Lexer lexer = new Lexer();
-        lexer.setTemplate(templateFOR);
+        lexer.setTemplate(FOR_COMMAND);
+
+        // when
         LexerToken token = lexer.nextToken();
-        Assert.assertEquals(token.getExpression(), templateFOR);
+
+        // then
+        Assert.assertEquals(FOR_COMMAND, token.getExpression());
     }
 
     @Test
     public void whenGivenSqlWithExpression_ExpectedTokenExpression0() {
+        // given
         Lexer lexer = new Lexer();
-        lexer.setTemplate("SELECT * FROM ${table_name}");
+        lexer.setTemplate(SELECT_EXPRESSION);
+
+        // when
+        lexer.nextToken();
         LexerToken token = lexer.nextToken();
-        token = lexer.nextToken();
+
+        //then
         Assert.assertTrue(token instanceof LexerTokenExpression);
     }
-    
+
     @Test
     public void whenGivenSqlWithExpression_ExpectedTokenExpressionWithExpression() {
+        // given
         Lexer lexer = new Lexer();
-        lexer.setTemplate("SELECT * FROM ${table_name}");
+        lexer.setTemplate(SELECT_EXPRESSION);
+
+        // when
+        lexer.nextToken();
         LexerToken token = lexer.nextToken();
-        token = lexer.nextToken();
-        Assert.assertEquals(token.getExpression(), "${table_name}");
+
+        // then
+        Assert.assertEquals("${table_name}", token.getExpression());
     }
 
     @Test
-    public void whenGivenMultilineTemplate_ExpectedThesameTemplate1() {
-        String template = "'${zoo.horse.name}+${zoo.horse.name}'";
-        
+    public void whenGivenMultilineTemplate_ExpectedTheSameTemplate1() {
+        // given
         Lexer lexer = new Lexer();
-        lexer.setTemplate(template);
+        lexer.setTemplate(EXPRESSION_CONCATENATION);
         StringBuilder builder = new StringBuilder();
-        while (lexer.hasMoreTokens()) {
-            LexerToken token = lexer.nextToken();
-            builder.append(token.getExpression());
-        }
-        String result = builder.toString().trim();
-        Assert.assertEquals(template, result);
+
+        // when
+        while (lexer.hasMoreTokens())
+            builder.append(lexer.nextToken().getExpression());
+
+        // then
+        Assert.assertEquals(EXPRESSION_CONCATENATION, builder.toString().trim());
     }
 
     @Test
-    public void whenGivenMultilineTemplate_ExpectedThesameTemplate2() {
-        List<String> sql = new ArrayList<String>();
-        String template = "SELECT * FROM ${table_name} WHERE name LIKE '${zoo.horse.name}+${o}'";
-        template = template + "\n" + template;
-        
+    public void whenGivenMultilineTemplate_ExpectedTheSameTemplate2() {
+        // given
         Lexer lexer = new Lexer();
+        String template = COMPLEX_SELECT_EXPRESSION + "\n" + COMPLEX_SELECT_EXPRESSION;
         lexer.setTemplate(template);
         StringBuilder builder = new StringBuilder();
-        while (lexer.hasMoreTokens()) {
-            LexerToken token = lexer.nextToken();
-            builder.append(token.getExpression());
-        }
-        String result = builder.toString().trim();
-        Assert.assertEquals(template, result);
+
+        // when
+        while (lexer.hasMoreTokens())
+            builder.append(lexer.nextToken().getExpression());
+
+        // then
+        Assert.assertEquals(template, builder.toString().trim());
     }
-    
-    @Test
-    public void whenGivenMultilineTemplate_ExpectedThesameTemplate3() {
-        Lexer lexer = new Lexer();
-        List<String> sql = new ArrayList<String>();
-        String template = "SELECT * FROM ${table_name} WHERE name LIKE '${zoo.horse.name}'+${o}";
-        template = template + "\n" + template;
-        lexer.setTemplate(template);
-        StringBuilder builder = new StringBuilder();
-        while (lexer.hasMoreTokens()) {
-            LexerToken token = lexer.nextToken();
-            builder.append(token.getExpression());
-        }
-        String result = builder.toString().trim();
-        Assert.assertEquals(template, result);
-    }
-    
 }
