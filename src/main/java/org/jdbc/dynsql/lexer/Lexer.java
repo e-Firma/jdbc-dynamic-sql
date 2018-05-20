@@ -1,5 +1,6 @@
 package org.jdbc.dynsql.lexer;
 
+import com.sun.istack.internal.Nullable;
 import org.jdbc.dynsql.lexer.token.LexerToken;
 import org.jdbc.dynsql.lexer.token.impl.LexerTokenCRLF;
 import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
@@ -30,8 +31,9 @@ public class Lexer {
         this.template = template.split("\n");
     }
 
+    @Nullable
     public LexerToken nextToken() {
-        LexerToken token = null;
+        LexerToken token;
         int startSearch = index;
 
         String stringLine = template[line].trim();
@@ -43,8 +45,7 @@ public class Lexer {
             token.setExpression(stringLine);
             line++;
             return token;
-        } else if (isSection(stringLine))
-        {
+        } else if (isSection(stringLine)) {
             token = new LexerTokenSection();
             token.setTemplateBeginning(line, index);
             token.setExpression(stringLine);
@@ -53,28 +54,26 @@ public class Lexer {
         }
 
         // check expression or content
-        if (token == null) {
-            boolean expressionFound = false;
-            while (index < stringLine.length()) {
-                if (stringLine.charAt(index) == '$' && stringLine.charAt(index + 1) == '{') {
-                    // check found content
-                    if (startSearch < index) {
-                        token = new LexerTokenContent();
-                        token.setTemplateBeginning(line, index);
-                        token.setExpression(stringLine.substring(startSearch, index));
-                        return token;
-                    } else {
-                        expressionFound = true;
-                    }
-                } else if (expressionFound && stringLine.charAt(index) == '}') {
-                    token = new LexerTokenExpression();
+        boolean expressionFound = false;
+        while (index < stringLine.length()) {
+            if (stringLine.charAt(index) == '$' && stringLine.charAt(index + 1) == '{') {
+                // check found content
+                if (startSearch < index) {
+                    token = new LexerTokenContent();
                     token.setTemplateBeginning(line, index);
-                    token.setExpression(stringLine.substring(startSearch, index + 1));
-                    index++;
+                    token.setExpression(stringLine.substring(startSearch, index));
                     return token;
+                } else {
+                    expressionFound = true;
                 }
+            } else if (expressionFound && stringLine.charAt(index) == '}') {
+                token = new LexerTokenExpression();
+                token.setTemplateBeginning(line, index);
+                token.setExpression(stringLine.substring(startSearch, index + 1));
                 index++;
+                return token;
             }
+            index++;
         }
 
         // recognize end line
@@ -91,16 +90,14 @@ public class Lexer {
             token.setTemplateBeginning(line, index);
             return token;
         }
-        return token;
+        return null;
     }
 
     public boolean hasMoreTokens() {
-        if (line < template.length && index <= template[line].length() + 1)
-            return true;
-        return false;
+        return line < template.length && index <= template[line].length() + 1;
     }
 
-    public boolean isCommand(String line) {
+    private boolean isCommand(String line) {
         if (index == 0)
             for (LexerCommand command : LexerCommand.values()) {
                 if (line.toLowerCase().startsWith("--" + command.toString().toLowerCase())) {
@@ -109,9 +106,8 @@ public class Lexer {
             }
         return false;
     }
-    
-    public boolean isSection(String line)
-    {
+
+    private boolean isSection(String line) {
         return line.trim().startsWith("--##");
     }
 }
