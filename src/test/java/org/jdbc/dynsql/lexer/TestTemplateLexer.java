@@ -1,10 +1,5 @@
 package org.jdbc.dynsql.lexer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.StreamSupport;
-
-import org.jdbc.dynsql.lexer.Lexer;
 import org.jdbc.dynsql.lexer.token.LexerToken;
 import org.jdbc.dynsql.lexer.token.impl.LexerTokenCommand;
 import org.jdbc.dynsql.lexer.token.impl.LexerTokenExpression;
